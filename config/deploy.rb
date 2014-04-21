@@ -1,6 +1,8 @@
 # config valid only for Capistrano 3.1
 lock '3.2.0'
 
+require 'bundler/capistrano'
+
 set :application, 'cap_test_app'
 set :repo_url, 'git@github.com:tjws052009/cap_test_app.git'
 
