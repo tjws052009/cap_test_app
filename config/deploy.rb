@@ -42,14 +42,14 @@ namespace :deploy do
   desc 'Bundle'
   task :bundle do
     on roles(:app) do
-      execute 'bundle install --path=vendor/bundle'
+      execute "cd /#{deploy_to}/current && bundle install --path=vendor/bundle"
     end
   end
 
   desc 'Start Unicorn server'
   task :start do
     on roles(:app) do
-      execute 'bundle exec unicorn -c config/unicorn.conf -D'
+      execute "cd /#{deploy_to}/current && bundle exec unicorn -c config/unicorn.conf -D"
     end
   end
 
