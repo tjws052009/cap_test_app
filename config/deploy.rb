@@ -9,6 +9,7 @@ set :repo_url, 'git@github.com:tjws052009/cap_test_app.git'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/deploy/cap_test_app'
+set :unicorn_pid, "#{deploy_to}/current"
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -47,6 +48,13 @@ namespace :deploy do
   task :start do
     on roles(:app) do
       execute "cd #{deploy_to}/current && bundle exec unicorn -c config/unicorn.conf -D"
+    end
+  end
+
+  desc 'Stop Unicorn server'
+  task :stop do
+    on roles(:app) do
+      execute "if [ -f #{unicorn_pid} ]; then kill -QUIT `cat #{unicorn_pid}`; fi" 
     end
   end
 
