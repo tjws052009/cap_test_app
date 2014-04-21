@@ -36,6 +36,20 @@ set :deploy_to, '/deploy/cap_test_app'
 
 namespace :deploy do
 
+  desc 'Bundle'
+  task :bundle do
+    on roles(:app) do
+      execute 'bundle install --path=vendor/bundle'
+    end
+  end
+
+  desc 'Start Unicorn server'
+  task :start do
+    on roles(:app) do
+      execute 'bundle exec unicorn -c config/unicorn.conf -D'
+    end
+  end
+
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
