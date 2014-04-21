@@ -9,7 +9,7 @@ set :repo_url, 'git@github.com:tjws052009/cap_test_app.git'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/deploy/cap_test_app'
-set :unicorn_pid, "#{deploy_to}/current"
+# set :unicorn_pid, "#{deploy_to}/current"
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -54,19 +54,19 @@ namespace :deploy do
   desc 'Stop Unicorn server'
   task :stop do
     on roles(:app) do
-      execute "if [ -f #{unicorn_pid} ]; then kill -QUIT `cat #{unicorn_pid}`; fi" 
+      execute "if [ -f #{deploy_to}/current/unicorn.pid ]; then kill -QUIT `cat #{deploy_to}/current/unicorn.pid`; fi" 
     end
   end
 
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
+      execute :stop
+      execute :start
     end
   end
 
-  after :publishing, :restart
+  after :finished, [:bundle, :stop, :start]
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
